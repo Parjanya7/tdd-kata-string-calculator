@@ -70,6 +70,21 @@ describe('StringCalculator', () => {
         expect(calculator.add('//[*][%][$]\n1*2%3$4')).toBe(10);
     });
 
+    it('should support multiple delimiters with varying lengths', () => {
+        expect(calculator.add('//[**][%%]\n1**2%%3')).toBe(6);
+        expect(calculator.add('//[###][!!!]\n1###2!!!3')).toBe(6);
+        expect(calculator.add('//[sep][***][&&&]\n1sep2***3&&&4')).toBe(10);
+        expect(calculator.add('//[delimiter][***]\n1delimiter2***3')).toBe(6);
+    });
+
+    it('should support all delimiter formats', () => {
+        expect(calculator.add('//[*]\n1*2*3')).toBe(6);          // Single char in brackets
+        expect(calculator.add('//[***]\n1***2***3')).toBe(6);    // Multiple chars in brackets
+        expect(calculator.add('//[*][%]\n1*2%3')).toBe(6);       // Multiple single char
+        expect(calculator.add('//[**][%%]\n1**2%%3')).toBe(6);   // Multiple multi-char
+        expect(calculator.add('//;\n1;2;3')).toBe(6);            // Legacy format
+    });
+
     describe('GetCalledCount', () => {
         let calculator: StringCalculator;
 
