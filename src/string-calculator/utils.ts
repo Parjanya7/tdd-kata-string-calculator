@@ -2,6 +2,36 @@ import { DelimiterInfo } from './types';
 import { validateNumbers } from './validators';
 import { MAX_ALLOWED_NUMBER } from './constants';
 
+const extractDelimiters = (delimiterSection: string): string[] => {
+    if (!delimiterSection.startsWith('[')) {
+        return [delimiterSection];
+    }
+
+    const delimiters: string[] = [];
+    let currentDelimiter = '';
+    let isInBrackets = false;
+
+    for (const char of delimiterSection) {
+        if (char === '[') {
+            isInBrackets = true;
+            continue;
+        }
+        if (char === ']') {
+            isInBrackets = false;
+            if (currentDelimiter) {
+                delimiters.push(currentDelimiter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+                currentDelimiter = '';
+            }
+            continue;
+        }
+        if (isInBrackets) {
+            currentDelimiter += char;
+        }
+    }
+
+    return delimiters;
+};
+
 const extractDelimiterInfo = (input: string): DelimiterInfo => {
     const hasCustomDelimiter = input.startsWith('//');
     
@@ -10,14 +40,18 @@ const extractDelimiterInfo = (input: string): DelimiterInfo => {
     }
     
     const firstNewLine = input.indexOf('\n');
-    let delimiter = input.substring(2, firstNewLine);
+    const delimiterSection = input.substring(2, firstNewLine);
     
-    if (delimiter.startsWith('[') && delimiter.endsWith(']')) {
-        delimiter = delimiter.slice(1, -1);
+    if (!delimiterSection.startsWith('[')) {
+        return {
+            delimiter: delimiterSection.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+            numbers: input.substring(firstNewLine + 1)
+        };
     }
     
+    const delimiters = extractDelimiters(delimiterSection);
     return {
-        delimiter: delimiter,
+        delimiter: delimiters.join('|'),
         numbers: input.substring(firstNewLine + 1)
     };
 };
@@ -25,8 +59,7 @@ const extractDelimiterInfo = (input: string): DelimiterInfo => {
 const createDelimiterRegex = (delimiter: string): RegExp => {
     if (delimiter === '[,\n]') return new RegExp(delimiter);
     
-    const escapedDelimiter = delimiter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return new RegExp(`[,\n]|${escapedDelimiter}`);
+    return new RegExp(`[,\n]|${delimiter}`);
 };
 
 const filterLargeNumbers = (numbers: number[]): number[] =>
