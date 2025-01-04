@@ -49,6 +49,13 @@ describe('StringCalculator', () => {
         expect(() => calculator.add('//|\n1|-2|-3|-4')).toThrow('negatives not allowed: -2, -3, -4');
     });
 
+    it('should ignore numbers bigger than 1000', () => {
+        expect(calculator.add('2,1001')).toBe(2);
+        expect(calculator.add('1000,1001,2')).toBe(1002);
+        expect(calculator.add('1,2000,2')).toBe(3);
+        expect(calculator.add('//;\n1;1001;2')).toBe(3);
+    });
+
     describe('GetCalledCount', () => {
         let calculator: StringCalculator;
 

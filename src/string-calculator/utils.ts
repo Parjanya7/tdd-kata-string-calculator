@@ -1,6 +1,8 @@
 import { DelimiterInfo } from './types';
 import { validateNumbers } from './validators';
 
+const MAX_ALLOWED_NUMBER = 1000;
+
 const extractDelimiterInfo = (input: string): DelimiterInfo => {
     const hasCustomDelimiter = input.startsWith('//');
     
@@ -18,6 +20,9 @@ const extractDelimiterInfo = (input: string): DelimiterInfo => {
 const createDelimiterRegex = (delimiter: string): RegExp =>
     new RegExp(delimiter === '[,\n]' ? delimiter : `[,\n${delimiter}]`);
 
+const filterLargeNumbers = (numbers: number[]): number[] =>
+    numbers.filter(n => n <= MAX_ALLOWED_NUMBER);
+
 export const parseNumbers = (input: string): number[] => {
     if (input === '') return [];
     
@@ -27,7 +32,7 @@ export const parseNumbers = (input: string): number[] => {
         .map(Number);
     
     validateNumbers(parsedNumbers);
-    return parsedNumbers;
+    return filterLargeNumbers(parsedNumbers);
 };
 
 export const sum = (numbers: number[]): number => 
