@@ -1,4 +1,5 @@
 import { DelimiterInfo } from './types';
+import { validateNumbers } from './validators';
 
 const extractDelimiterInfo = (input: string): DelimiterInfo => {
     const hasCustomDelimiter = input.startsWith('//');
@@ -21,9 +22,12 @@ export const parseNumbers = (input: string): number[] => {
     if (input === '') return [];
     
     const { delimiter, numbers } = extractDelimiterInfo(input);
-    return numbers
+    const parsedNumbers = numbers
         .split(createDelimiterRegex(delimiter))
         .map(Number);
+    
+    validateNumbers(parsedNumbers);
+    return parsedNumbers;
 };
 
 export const sum = (numbers: number[]): number => 

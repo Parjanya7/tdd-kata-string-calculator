@@ -37,4 +37,15 @@ describe('StringCalculator', () => {
         expect(calculator.add('//|\n1|2|3')).toBe(6);
         expect(calculator.add('//sep\n1sep2sep3')).toBe(6);
     });
+
+    it('should throw exception for negative numbers', () => {
+        expect(() => calculator.add('-1,2')).toThrow('negatives not allowed: -1');
+        expect(() => calculator.add('2,-4,3,-5')).toThrow('negatives not allowed: -4, -5');
+        expect(() => calculator.add('-1,-2,-3')).toThrow('negatives not allowed: -1, -2, -3');
+    });
+
+    it('should throw exception with custom delimiters and multiple negative numbers', () => {
+        expect(() => calculator.add('//;\n-1;-2;3')).toThrow('negatives not allowed: -1, -2');
+        expect(() => calculator.add('//|\n1|-2|-3|-4')).toThrow('negatives not allowed: -2, -3, -4');
+    });
 });
