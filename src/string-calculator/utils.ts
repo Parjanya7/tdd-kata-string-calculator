@@ -1,7 +1,6 @@
 import { DelimiterInfo } from './types';
 import { validateNumbers } from './validators';
-
-const MAX_ALLOWED_NUMBER = 1000;
+import { MAX_ALLOWED_NUMBER } from './constants';
 
 const extractDelimiterInfo = (input: string): DelimiterInfo => {
     const hasCustomDelimiter = input.startsWith('//');
@@ -11,14 +10,24 @@ const extractDelimiterInfo = (input: string): DelimiterInfo => {
     }
     
     const firstNewLine = input.indexOf('\n');
+    let delimiter = input.substring(2, firstNewLine);
+    
+    if (delimiter.startsWith('[') && delimiter.endsWith(']')) {
+        delimiter = delimiter.slice(1, -1);
+    }
+    
     return {
-        delimiter: input.substring(2, firstNewLine),
+        delimiter: delimiter,
         numbers: input.substring(firstNewLine + 1)
     };
 };
 
-const createDelimiterRegex = (delimiter: string): RegExp =>
-    new RegExp(delimiter === '[,\n]' ? delimiter : `[,\n${delimiter}]`);
+const createDelimiterRegex = (delimiter: string): RegExp => {
+    if (delimiter === '[,\n]') return new RegExp(delimiter);
+    
+    const escapedDelimiter = delimiter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`[,\n]|${escapedDelimiter}`);
+};
 
 const filterLargeNumbers = (numbers: number[]): number[] =>
     numbers.filter(n => n <= MAX_ALLOWED_NUMBER);

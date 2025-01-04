@@ -56,6 +56,13 @@ describe('StringCalculator', () => {
         expect(calculator.add('//;\n1;1001;2')).toBe(3);
     });
 
+    it('should support delimiters of any length', () => {
+        expect(calculator.add('//[***]\n1***2***3')).toBe(6);
+        expect(calculator.add('//[delimiter]\n1delimiter2delimiter3')).toBe(6);
+        expect(calculator.add('//[##]\n1##2##3')).toBe(6);
+        expect(calculator.add('//[....]\n1....2....3')).toBe(6);
+    });
+
     describe('GetCalledCount', () => {
         let calculator: StringCalculator;
 
