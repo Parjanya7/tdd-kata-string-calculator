@@ -75,4 +75,60 @@ describe('StringCalculator', () => {
             expect(calculator.getCalledCount()).toBe(3);
         });
     });
+
+    describe('AddOccurred Event', () => {
+        let calculator: StringCalculator;
+
+        beforeEach(() => {
+            calculator = new StringCalculator();
+        });
+
+        it('should trigger event after add is called', () => {
+            let givenInput: string | null = null;
+            let givenResult: number | null = null;
+
+            calculator.addAddOccurredListener((input, result) => {
+                givenInput = input;
+                givenResult = result;
+            });
+
+            calculator.add('1,2');
+
+            expect(givenInput).toBe('1,2');
+            expect(givenResult).toBe(3);
+        });
+
+        it('should trigger event multiple times', () => {
+            const calls: Array<[string, number]> = [];
+
+            calculator.addAddOccurredListener((input, result) => {
+                calls.push([input, result]);
+            });
+
+            calculator.add('1,2');
+            calculator.add('3,4');
+
+            expect(calls).toEqual([
+                ['1,2', 3],
+                ['3,4', 7]
+            ]);
+        });
+
+        it('should support multiple listeners', () => {
+            const calls1: Array<[string, number]> = [];
+            const calls2: Array<[string, number]> = [];
+
+            calculator.addAddOccurredListener((input, result) => {
+                calls1.push([input, result]);
+            });
+            calculator.addAddOccurredListener((input, result) => {
+                calls2.push([input, result]);
+            });
+
+            calculator.add('1,2');
+
+            expect(calls1).toEqual([['1,2', 3]]);
+            expect(calls2).toEqual([['1,2', 3]]);
+        });
+    });
 });
