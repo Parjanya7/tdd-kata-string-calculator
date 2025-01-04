@@ -48,4 +48,31 @@ describe('StringCalculator', () => {
         expect(() => calculator.add('//;\n-1;-2;3')).toThrow('negatives not allowed: -1, -2');
         expect(() => calculator.add('//|\n1|-2|-3|-4')).toThrow('negatives not allowed: -2, -3, -4');
     });
+
+    describe('GetCalledCount', () => {
+        let calculator: StringCalculator;
+
+        beforeEach(() => {
+            calculator = new StringCalculator();
+        });
+
+        it('should return number of times add was called', () => {
+            expect(calculator.getCalledCount()).toBe(0);
+            
+            calculator.add('1,2');
+            expect(calculator.getCalledCount()).toBe(1);
+            
+            calculator.add('2,3');
+            calculator.add('1');
+            expect(calculator.getCalledCount()).toBe(3);
+        });
+
+        it('should maintain count across different operations', () => {
+            calculator.add('1,2');
+            calculator.add('//;\n1;2');
+            calculator.add('1\n2,3');
+            
+            expect(calculator.getCalledCount()).toBe(3);
+        });
+    });
 });
