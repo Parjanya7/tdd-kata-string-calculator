@@ -50,4 +50,30 @@ describe('StringCalculator', () => {
       expect(() => calculator.add('//;\n1;-2')).toThrow('negatives not allowed - -2');
     });
   });
+
+  describe('getCalledCount', () => {
+    it('should return 0 when no add calls have been made', () => {
+      expect(calculator.getCalledCount()).toBe(0);
+    });
+
+    it('should return the number of times add was called', () => {
+      calculator.add('1,2');
+      expect(calculator.getCalledCount()).toBe(1);
+
+      calculator.add('3,4');
+      expect(calculator.getCalledCount()).toBe(2);
+
+      calculator.add('5,6');
+      expect(calculator.getCalledCount()).toBe(3);
+    });
+
+    it('should count failed add calls', () => {
+      try {
+        calculator.add('-1');
+      } catch (error) {
+        // Expected error
+      }
+      expect(calculator.getCalledCount()).toBe(1);
+    });
+  });
 }); 

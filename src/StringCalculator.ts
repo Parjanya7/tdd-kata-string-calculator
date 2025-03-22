@@ -1,6 +1,8 @@
 import { StringCalculatorPatterns } from './constants';
 
 export class StringCalculator {
+  private addCallCount: number = 0;
+
   private parseDelimiterAndNumbers(input: string): { delimiter: RegExp; numbers: string } {
     const delimiterMatch = input.match(StringCalculatorPatterns.CUSTOM_DELIMITER);
     
@@ -32,6 +34,8 @@ export class StringCalculator {
   }
 
   public add(numbers: string): number {
+    this.addCallCount++;
+    
     if (!numbers) {
       return 0;
     }
@@ -42,5 +46,9 @@ export class StringCalculator {
     this.validateNumbers(numberArray);
     
     return numberArray.reduce((sum, num) => sum + parseInt(num, 10), 0);
+  }
+
+  public getCalledCount(): number {
+    return this.addCallCount;
   }
 }
