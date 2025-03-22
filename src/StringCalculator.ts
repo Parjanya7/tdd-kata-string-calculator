@@ -33,6 +33,12 @@ export class StringCalculator {
     }
   }
 
+  private filterLargeNumbers(numbers: string[]): number[] {
+    return numbers
+      .map(num => parseInt(num, 10))
+      .filter(num => num <= StringCalculatorPatterns.MAX_NUMBER);
+  }
+
   public add(numbers: string): number {
     this.addCallCount++;
     
@@ -44,8 +50,9 @@ export class StringCalculator {
     const numberArray = numbersToProcess.split(delimiter);
     
     this.validateNumbers(numberArray);
+    const filteredNumbers = this.filterLargeNumbers(numberArray);
     
-    return numberArray.reduce((sum, num) => sum + parseInt(num, 10), 0);
+    return filteredNumbers.reduce((sum, num) => sum + num, 0);
   }
 
   public getCalledCount(): number {

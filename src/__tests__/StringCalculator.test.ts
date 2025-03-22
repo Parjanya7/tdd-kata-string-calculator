@@ -49,6 +49,14 @@ describe('StringCalculator', () => {
       expect(() => calculator.add('-1,-2')).toThrow('negatives not allowed - -1,-2');
       expect(() => calculator.add('//;\n1;-2')).toThrow('negatives not allowed - -2');
     });
+
+    it('should ignore numbers bigger than 1000', () => {
+      expect(calculator.add('2,1001')).toBe(2);
+      expect(calculator.add('2,1000')).toBe(1002);
+      expect(calculator.add('1,2,1001,3')).toBe(6);
+      expect(calculator.add('1001,1002,1003')).toBe(0);
+      expect(calculator.add('//;\n1;1001;2')).toBe(3);
+    });
   });
 
   describe('getCalledCount', () => {

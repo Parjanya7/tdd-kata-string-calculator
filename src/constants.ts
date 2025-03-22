@@ -1,3 +1,6 @@
+/**
+ * Regular expression patterns for the StringCalculator
+ */
 export const StringCalculatorPatterns = {
   /**
    * Pattern to detect custom delimiter format
@@ -12,5 +15,11 @@ export const StringCalculatorPatterns = {
    * Default delimiters for number separation
    * Matches either comma or newline
    */
-  DEFAULT_DELIMITERS: /[,\n]/
+  DEFAULT_DELIMITERS: /[,\n]/,
+
+  /**
+   * Maximum number to be included in the sum
+   * Numbers greater than this will be ignored
+   */
+  MAX_NUMBER: 1000
 } as const; 
