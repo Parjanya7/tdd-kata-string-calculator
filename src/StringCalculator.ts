@@ -21,6 +21,16 @@ export class StringCalculator {
     };
   }
 
+  private validateNumbers(numbers: string[]): void {
+    const negativeNumbers = numbers
+      .map(num => parseInt(num, 10))
+      .filter(num => num < 0);
+
+    if (negativeNumbers.length > 0) {
+      throw new Error(`negatives not allowed - ${negativeNumbers.join(',')}`);
+    }
+  }
+
   public add(numbers: string): number {
     if (!numbers) {
       return 0;
@@ -28,6 +38,9 @@ export class StringCalculator {
 
     const { delimiter, numbers: numbersToProcess } = this.parseDelimiterAndNumbers(numbers);
     const numberArray = numbersToProcess.split(delimiter);
+    
+    this.validateNumbers(numberArray);
+    
     return numberArray.reduce((sum, num) => sum + parseInt(num, 10), 0);
   }
 }
