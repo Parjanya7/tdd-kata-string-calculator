@@ -57,6 +57,13 @@ describe('StringCalculator', () => {
       expect(calculator.add('1001,1002,1003')).toBe(0);
       expect(calculator.add('//;\n1;1001;2')).toBe(3);
     });
+
+    it('should handle delimiters of any length', () => {
+      expect(calculator.add('//[***]\n1***2***3')).toBe(6);
+      expect(calculator.add('//[delimiter]\n1delimiter2delimiter3')).toBe(6);
+      expect(calculator.add('//[##]\n1##2##3')).toBe(6);
+      expect(calculator.add('//[***]\n1***2,3')).toBe(6);
+    });
   });
 
   describe('getCalledCount', () => {

@@ -4,15 +4,24 @@ export class StringCalculator {
   private addCallCount: number = 0;
 
   private parseDelimiterAndNumbers(input: string): { delimiter: RegExp; numbers: string } {
-    const delimiterMatch = input.match(StringCalculatorPatterns.CUSTOM_DELIMITER);
-    
-    if (delimiterMatch) {
-      // If custom delimiter is found:
-      // 1. Create a regex that includes the custom delimiter along with comma and newline
-      // 2. Extract the numbers part by removing the delimiter declaration
+    // First try to match the bracketed delimiter pattern
+    const bracketedDelimiterMatch = input.match(StringCalculatorPatterns.CUSTOM_DELIMITER_WITH_BRACKETS);
+    if (bracketedDelimiterMatch) {
+      const delimiter = bracketedDelimiterMatch[1];
+      // Escape special regex characters in the delimiter
+      const escapedDelimiter = delimiter.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
       return {
-        delimiter: new RegExp(`[${delimiterMatch[1]},\n]`),
-        numbers: input.substring(delimiterMatch[0].length)
+        delimiter: new RegExp(`${escapedDelimiter}|,|\\n`),
+        numbers: input.substring(bracketedDelimiterMatch[0].length)
+      };
+    }
+
+    // Try the simple delimiter pattern
+    const simpleDelimiterMatch = input.match(StringCalculatorPatterns.CUSTOM_DELIMITER);
+    if (simpleDelimiterMatch) {
+      return {
+        delimiter: new RegExp(`[${simpleDelimiterMatch[1]},\n]`),
+        numbers: input.substring(simpleDelimiterMatch[0].length)
       };
     }
 

@@ -12,6 +12,17 @@ export const StringCalculatorPatterns = {
   CUSTOM_DELIMITER: /^\/\/(.+)\n/,
 
   /**
+   * Pattern to detect custom delimiter with brackets format
+   * ^ - Start of string
+   * \/\/ - Matches literal "//"
+   * \[ - Matches opening bracket
+   * ([^\]]+) - Captures one or more characters that are not closing bracket
+   * \] - Matches closing bracket
+   * \n - Matches newline character
+   */
+  CUSTOM_DELIMITER_WITH_BRACKETS: /^\/\/\[([^\]]+)\]\n/,
+
+  /**
    * Default delimiters for number separation
    * Matches either comma or newline
    */
