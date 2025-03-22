@@ -4,7 +4,7 @@ export class StringCalculator {
       return 0;
     }
     
-    const numberArray = numbers.split(',');
+    const numberArray = numbers.split(/[,\n]/);
     return numberArray.reduce((sum, num) => sum + parseInt(num, 10), 0);
   }
 }

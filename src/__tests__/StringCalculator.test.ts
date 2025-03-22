@@ -25,5 +25,11 @@ describe('StringCalculator', () => {
       expect(calculator.add('10,20,30,40,50')).toBe(150);
       expect(calculator.add('1,2,3,4,5,6,7,8,9,10')).toBe(55);
     });
+
+    it('should handle new lines between numbers', () => {
+      expect(calculator.add('1\n2,3')).toBe(6);
+      expect(calculator.add('1,2\n3')).toBe(6);
+      expect(calculator.add('1\n2\n3')).toBe(6);
+    });
   });
 }); 
