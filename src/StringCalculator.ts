@@ -12,25 +12,14 @@ export class StringCalculator {
     const multipleDelimitersMatch = input.match(StringCalculatorPatterns.MULTIPLE_DELIMITERS);
     if (multipleDelimitersMatch) {
       // Get all captured delimiters and escape them
-      const delimiters = Array.from(multipleDelimitersMatch.slice(1))
-        .map(delimiter => this.escapeRegExp(delimiter));
+      const delimiters = Array.from(multipleDelimitersMatch[0].matchAll(/\[([^\]]+)\]/g))
+        .map(match => this.escapeRegExp(match[1]));
       
       // Create a regex that matches any of the delimiters, comma, or newline
       const delimiterPattern = `(${delimiters.join('|')}|,|\\n)`;
       return {
         delimiter: new RegExp(delimiterPattern),
         numbers: input.substring(multipleDelimitersMatch[0].length)
-      };
-    }
-
-    // Try the single bracketed delimiter pattern
-    const bracketedDelimiterMatch = input.match(StringCalculatorPatterns.CUSTOM_DELIMITER_WITH_BRACKETS);
-    if (bracketedDelimiterMatch) {
-      const delimiter = bracketedDelimiterMatch[1];
-      const escapedDelimiter = this.escapeRegExp(delimiter);
-      return {
-        delimiter: new RegExp(`${escapedDelimiter}|,|\\n`),
-        numbers: input.substring(bracketedDelimiterMatch[0].length)
       };
     }
 

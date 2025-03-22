@@ -54,8 +54,6 @@
       "declaration": true,
       "declarationMap": true,
       "emitDeclarationOnly": true,
-      "sourceMap": true,
-      "inlineSourceMap": true,
       "noEmit": true,
       "outFile": "./",
       "outDir": "./dist",
