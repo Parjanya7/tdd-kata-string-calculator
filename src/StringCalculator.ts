@@ -3,13 +3,31 @@ import { StringCalculatorPatterns } from './constants';
 export class StringCalculator {
   private addCallCount: number = 0;
 
+  private escapeRegExp(string: string): string {
+    return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  }
+
   private parseDelimiterAndNumbers(input: string): { delimiter: RegExp; numbers: string } {
-    // First try to match the bracketed delimiter pattern
+    // First try to match multiple delimiters pattern
+    const multipleDelimitersMatch = input.match(StringCalculatorPatterns.MULTIPLE_DELIMITERS);
+    if (multipleDelimitersMatch) {
+      // Get all captured delimiters and escape them
+      const delimiters = Array.from(multipleDelimitersMatch.slice(1))
+        .map(delimiter => this.escapeRegExp(delimiter));
+      
+      // Create a regex that matches any of the delimiters, comma, or newline
+      const delimiterPattern = `(${delimiters.join('|')}|,|\\n)`;
+      return {
+        delimiter: new RegExp(delimiterPattern),
+        numbers: input.substring(multipleDelimitersMatch[0].length)
+      };
+    }
+
+    // Try the single bracketed delimiter pattern
     const bracketedDelimiterMatch = input.match(StringCalculatorPatterns.CUSTOM_DELIMITER_WITH_BRACKETS);
     if (bracketedDelimiterMatch) {
       const delimiter = bracketedDelimiterMatch[1];
-      // Escape special regex characters in the delimiter
-      const escapedDelimiter = delimiter.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      const escapedDelimiter = this.escapeRegExp(delimiter);
       return {
         delimiter: new RegExp(`${escapedDelimiter}|,|\\n`),
         numbers: input.substring(bracketedDelimiterMatch[0].length)

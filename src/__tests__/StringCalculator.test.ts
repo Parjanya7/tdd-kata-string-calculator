@@ -64,6 +64,14 @@ describe('StringCalculator', () => {
       expect(calculator.add('//[##]\n1##2##3')).toBe(6);
       expect(calculator.add('//[***]\n1***2,3')).toBe(6);
     });
+
+    it('should handle multiple delimiters', () => {
+      expect(calculator.add('//[*][%]\n1*2%3')).toBe(6);
+      expect(calculator.add('//[**][%%]\n1**2%%3')).toBe(6);
+      expect(calculator.add('//[delim1][delim2]\n1delim12delim23')).toBe(6);
+      expect(calculator.add('//[*][%][#]\n1*2%3#4')).toBe(10);
+      expect(calculator.add('//[*][%]\n1*2,3%4')).toBe(10);
+    });
   });
 
   describe('getCalledCount', () => {
